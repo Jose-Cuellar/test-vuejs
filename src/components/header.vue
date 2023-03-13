@@ -1,6 +1,10 @@
 <template>
   <div class="contain_header">
     <header>
+      <!-- Iconos -->
+      <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+      <link rel="stylesheet" href="https://cdn.materialdesignicons.com/5.7.55/css/materialdesignicons.min.css">
+      <!-- fin iconos -->
       <nav>
         <ul class="ul_header">
           <template v-for="item in itemsHeader" :key="item.id">
@@ -15,30 +19,12 @@
                 </router-link>
               </li>
             </ul>
-              
-            <!-- <li v-else :key="item.id" class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
-                aria-haspopup="true" aria-expanded="false">
-                {{item.text}}
-              </a>
-              <div style="margin-bottom:20px;" class="dropdown-menu" aria-labelledby="navbarDropdown">
-                <router-link v-for="data in item.subItem " :key="data.id" class="dropdown-item text-danger"
-                  :to="{ name: data.routeName }" :class="{
-                    active: $route.name === data.routeName,
-                    'nav-item': true,
-                    'nav-link': true
-                  }">
-                  <span @click="ocultar">{{ data.text }}</span>
-                </router-link>
-              </div>
-            </li> -->
-            
           </template>
 
-          <ul class="ul_header_sessions">
-            <template v-for="itemSession in itemsHeaderSessions" :key="itemSession.id">
-              <router-link class="routes_navbar_sessions" v-if="itemSession.subItem.length == 0" :to="{ name: itemSession.routeName }">
-                <span>{{ itemSession.text }}</span>
+          <ul class="ul_header_user">
+            <template v-for="itemUser in itemsHeaderUser" :key="itemUser.id">
+              <router-link class="routes_navbar_user" v-if="itemUser.subItem.length == 0" :to="{ name: itemUser.routeName }">
+                <span>{{ itemUser.text }}</span>
               </router-link>
             </template>
           </ul>
@@ -53,6 +39,8 @@ export default {
   name: 'AppHeader',
   data(){
     return{
+      showSubItems: false,
+      
       // Items de navegación
       itemsHeader: [
         {
@@ -81,12 +69,18 @@ export default {
         },
       ],
 
-      // Items para botones de inicio de sesión
-      itemsHeaderSessions: [
+      // Items para botones de registro e inicio de sesión
+      itemsHeaderUser: [
         {
           id: 4,
           routeName: "loginUser",
           text: "Iniciar sesión",
+          subItem: []
+        },
+        {
+          id: 5,
+          routeName: "registerUser",
+          text: "Regístrate",
           subItem: []
         },
       ],
@@ -117,15 +111,15 @@ export default {
   text-decoration: none;
   color: darkblue;
 }
-.ul_header_sessions .routes_navbar_sessions{
+.ul_header_user .routes_navbar_user{
   list-style-type: none;
   margin: 5px 15px 5px 15px;
 }
-.ul_header_sessions{
+.ul_header_user{
   margin: 5px 0px 5px auto;
   text-align: end;
 }
-.routes_navbar_sessions{
+.routes_navbar_user{
   text-decoration: none;
   color: darkblue;
 }

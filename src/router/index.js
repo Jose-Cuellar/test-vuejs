@@ -4,11 +4,12 @@ import Home from '../views/datosAxios/pruebas.vue';
 import Axios from '../views/datosAxios/pruebaAxios.vue';
 import AxiosV2 from '../views/datosAxios/pruebaAxiosV2.vue';
 
-// Inicio de sesión
-import loginUser from '../views/sessions/login.vue';
+// Rutas usuarios
+import registerUser from '../views/user/registerUser.vue';
+import loginUser from '../views/user/loginUser.vue';
 
-// Crea las rutas
 const routes = [
+  /***** Rutas para todos los usuarios *****/
   {
     path: '/',
     name: 'home',
@@ -24,7 +25,14 @@ const routes = [
     name: 'axiosv2',
     component: AxiosV2
   },
-  // Login de usuarios
+  /***** Rutas para registro de usuarios *****/
+  {
+    path: '/register',
+    name: "registerUser",
+    component: registerUser
+  },
+
+  /***** Ruta para login de usuarios *****/
   {
     path: '/login',
     name: 'loginUser',
