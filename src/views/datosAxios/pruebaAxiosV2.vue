@@ -1,71 +1,59 @@
 <template>
-  <div class="content">
-    <h1 id="title">Datos consumidos por axios</h1>
-      <table class="table table-striped">
-        <thead class="thead-light">
-          <tr>
-            <th scope="col">ID</th>
-            <th scope="col">ID USER</th>
-            <th scope="col">TITLE</th>
-            <th scope="col">COMPLETED</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="dato in datos.slice((currentPage - 1) * 10, currentPage * 10)" :key="dato.id">
-            <td>{{ dato.id }}</td>
-            <td>{{ dato.userId }}</td>
-            <td>{{ dato.title }}</td>
-            <td>{{ dato.completed }}</td>
-          </tr>
-        </tbody>
-      </table>
-
-      <!-- Paginación -->
-      <div class="d-flex justify-content-center">
-        <nav aria-label="Page navigation example">
-          <ul class="pagination">
-            <li class="page-item" :class="{disabled: currentPage === 1}">
-              <a class="page-link" href="#" @click.prevent="prevPage()">
-                Anterior
-              </a>
-            </li>
-            <li class="page-item" v-for="page in pages" :key="page" :class="{active: currentPage === page}">
-              <a class="page-link" href="#" @click.prevent="changePage(page)">
-                {{ page }}
-              </a>
-            </li>
-            <li class="page-item" :class="{disabled: currentPage === totalPages}">
-              <a class="page-link" href="#" @click.prevent="nextPage()">
-                Siguiente
-              </a>
-            </li>
-          </ul>
-        </nav>
+  <div class="min-h-screen w-screen bg-gray-600 flex items-center justify-center">
+    <draggable :list="users">     
+      <div
+        class="list-group-item bg-gray-300 m-1 p-3 rounded-md text-center"
+        v-for="user in users" :key="user.name"
+        >
+        <div class="content_users">
+          <div class="avatar_user">
+            <img
+              :src="user.image"
+            >
+          </div>
+          <div class="name_user">
+            <b>{{ user.name }}</b>
+          </div>
+        </div>
       </div>
-
-      <div class="botones">
-        <button class="btn_back" @click="back()">
-          Regresar
-        </button>
-        <button class="btn_excel" @click="downloadExcel()">
-          Descargar excel
-        </button>
-      </div>
-      <hr>
+    </draggable>
+    <!-- Paginación -->
+    <div class="d-flex justify-content-center">
+      <nav aria-label="Page navigation example">
+        <ul class="pagination">
+          <li class="page-item" :class="{disabled: currentPage === 1}">
+            <a class="previous page-link" href="#" @click.prevent="prevPage()">
+              Anterior
+            </a>
+          </li>
+          <li class="page-item" v-for="page in pages" :key="page" :class="{active: currentPage === page}">
+            <a class="page-link" href="#" @click.prevent="changePage(page)">
+              {{ page }}
+            </a>
+          </li>
+          <li class="page-item" :class="{disabled: currentPage === totalPages}">
+            <a class="next page-link" href="#" @click.prevent="nextPage()">
+              Siguiente
+            </a>
+          </li>
+        </ul>
+      </nav>
+    </div>
   </div>
 </template>
-  
+
 <script>
-import axios from "axios";
-import * as XLSX from 'xlsx';
-import swal from 'sweetalert2';
+import axios from 'axios';
+import { VueDraggableNext } from "vue-draggable-next";
 
 export default {
-  name: 'pruebaAxios',
-  data(){
-    return{
-      datos: [],
-      dataToExport: [],
+  name: 'App',
+  components: {
+    draggable: VueDraggableNext   
+  },
+  data() {
+    return {
+      users: [],
 
       // Paginación
       currentPage: 1,
@@ -98,22 +86,11 @@ export default {
     },
   },
   methods:{
-    getData() {
-      this.loading = true;
-      axios.get("https://jsonplaceholder.typicode.com/todos/").then((res) => {
-        this.datos = res.data;
-        this.totalDatos = this.datos.length;
-        this.totalPages = Math.ceil(this.totalDatos / this.pageSize);
-        this.paginate();
-        this.loading = false;
-      });
-    },
-
     // Paginación
     paginate() {
       const start = (this.currentPage - 1) * this.pageSize;
       const end = start + this.pageSize;
-      this.paginatedData = this.datos.slice(start, end);
+      this.paginatedData = this.users.slice(start, end);
     },
     changePage(page) {
       this.currentPage = page;
@@ -137,94 +114,52 @@ export default {
       this.currentPage = 1;
       this.paginate();
     },
-
-    downloadExcel() {
-      swal.fire({
-        icon: "question",
-        title: "Descargar reporte",
-        text: "¿Deseas descargar el reporte?",
-        confirmButtonText: "Sí, Descargar",
-        confirmButtonColor: "green",
-        showCancelButton: true,
-        cancelButtonText: "No, Cancelar",
-        cancelButtonColor: "#d33",
-        showClass: {
-          popup: 'animate__animated animate__fadeInDown'
-        },
-      }).then((result) => {
-        if(result.isConfirmed){
-          this.datos.forEach((dato) => {
-            this.dataToExport.push({
-              Id_Usuario:dato.userId,
-              Id:dato.id,
-              Titulo:dato.title,
-              Completado:dato.completed
-            });
-          });
-          let data = XLSX.utils.json_to_sheet(this.dataToExport);
-          const workbook = XLSX.utils.book_new();
-          const filename = 'axios_get';
-          XLSX.utils.book_append_sheet(workbook, data, filename);
-          XLSX.writeFile(workbook, `${filename}.xlsx`);
-        }
-      });
-    },
-    back(){
-      window.history.back();
-    },
   },
-  mounted(){
-    this.getData();
-  },
-};
+  mounted() {
+    axios
+    .get('https://rickandmortyapi.com/api/character')
+    .then(response => {
+      this.users = response.data.results;
+      this.users.sort((a, b) => a.name.localeCompare(b.name));
+      this.totalDatos = this.users.length;
+      this.totalPages = Math.ceil(this.totalDatos / this.pageSize);
+      this.paginate();
+      this.loading = false;
+    })
+    .catch(error => {
+      console.log(error);
+    });
+  }
+}
 </script>
-  
+
 <style scoped>
-  .content{
-    max-width: 80%;
-    padding: 80px 10px 50px 10px;
-    margin: auto;
-  }
-  th, td{
-    text-align:left;
-    padding: 10px 10px 10px 10px;
-    margin: auto;
-  }
-  #title{
-    font-size:30px;
-    color:darkblue;
-  }
-  .d-flex{
-    padding: 20px;
-  }
-  .botones{
-    width: 100%;
-    margin: auto;
-  }
-  .btn_back{
-    padding: 5px 15px 5px 15px;
-    border: 2px solid;
-    cursor: pointer;
-    background-color: white;
-    color: #008CBA;
-    border-radius: 30px;
-    font-weight: bold;
-    margin: 20px 20px 5px 0px;
-  }
-  .btn_back:hover{
-    color: red;
-  }
-  .btn_excel{
-    padding: 5px 15px 5px 15px;
-    border: 2px solid;
-    cursor: pointer;
-    background-color: white;
-    color: #008CBA;
-    border-radius: 30px;
-    font-weight: bold;
-    margin: 20px 20px 5px 0px;
-  }
-  .btn_excel:hover{
-    color: green;
-  }
+.w-screen{
+  max-width: 60%;
+  padding: 100px 10px 50px 10px;
+  margin: auto;
+}
+.list-group-item{
+  background-color: rgb(60, 62, 68);
+  border-radius: 20px;
+}
+.content_users{
+  display: flex;
+  cursor: move;
+}
+.id_user, .name_user, .avatar_user{
+  padding: 15px;
+  margin-top: auto;
+  margin-bottom: auto;
+}
+.name_user{
+  color: white;
+}
+.avatar_user img{
+  max-width: 100px;
+  border-radius: 100%;
+}
+.d-flex{
+  padding: 20px;
+}
 </style>

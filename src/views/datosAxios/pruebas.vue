@@ -201,7 +201,7 @@ export default {
 <style scoped>
   #aplicacion{
     max-width: 80%;
-    padding: 80px 10px 50px 10px;
+    padding: 100px 10px 50px 10px;
     margin: auto;
   }
   th, td{

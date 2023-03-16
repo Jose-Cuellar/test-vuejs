@@ -97,6 +97,7 @@ export default {
   height: auto;
   background-color: #E7E7E7;
   padding: 20px 5px 20px 5px;
+  border-bottom: 2px solid darkblue;
 }
 .ul_header{
   display: flex;

@@ -90,7 +90,7 @@
 <script>
 import axios from 'axios';
 // import $ from 'jquery';
-// import swal from 'sweetalert2';
+import swal from 'sweetalert2';
 
 export default {
   name: "loginUser",
@@ -145,15 +145,26 @@ export default {
         password: app.form.userPass,
       }
       if(app.validForm()){
-        axios.post('login/users/' + dataRegister).then((res) => {
-          if(res.data.data.cod == 200){
-            console.log(res.data);
+        axios.post(`${this.$apiUrl}/api/register/user`, dataRegister).then((res) => {
+          if(res.data.cod == 200){
+            swal.fire({
+              icon: "success",
+              title: "Muy bien!",
+              text: res.data.message,
+              confirmButtonColor: "green",
+            });
+            app.clearForm();
           }else{
-            console.log(res.data);
+            swal.fire({
+              icon: "error",
+              title: "Ops",
+              text: "El email ya se encuentra registrado",
+              confirmButtonColor: "red",
+            });
           }
         })
-        .catch((res) => {
-          console.log(res);
+        .catch((error) => {
+          console.log('error ', JSON.stringify(error));
         });
       }
     },

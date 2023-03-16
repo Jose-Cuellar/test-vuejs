@@ -284,34 +284,4 @@ export default {
 .btn_back:hover{
   color: red;
 }
-
-
-
-
-/* .container_login{
-    width: 100%;
-    height: 100vh;
-    background-color: black;
-}
-.form_login_user{
-    width: 80%;
-    height: 100%;
-    margin: auto;
-    background-color: red;
-}
-.info_aditional{
-    width: 80%;
-    height: 100%;
-    margin: auto;
-    background-color: blue;
-}
-.form_user{
-    width: 80%;
-    height: 100%;
-    margin: auto;
-    background-color: green;
-}
-.inputs_login{
-    margin: 25%;
-} */
 </style>

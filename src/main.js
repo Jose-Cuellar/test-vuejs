@@ -8,10 +8,15 @@ import VuePaginate from "vue-paginate";
 import VueSweetalert2 from 'vue-sweetalert2';
 import 'sweetalert2/dist/sweetalert2.min.css';
 import VueRouter from "vue-router";
+import axios from 'axios';
 
 const app = createApp(App)
 app.use(router)
 app.mount('#app')
+
+// Url del back
+app.config.globalProperties.$http = axios
+app.config.globalProperties.$apiUrl = process.env.VUE_APP_API_URL
 
 Vue.use(VuePaginate);
 Vue.use(VueSweetalert2);
