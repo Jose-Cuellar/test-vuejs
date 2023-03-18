@@ -57,8 +57,8 @@ export default {
         },
         {
           id: 3,
-          routeName: "axiosv2",
-          text: "Axios V2",
+          routeName: "RickAndMorty",
+          text: "Api Rick And Morty",
           subItem: [
             // {
             //   id: 4,

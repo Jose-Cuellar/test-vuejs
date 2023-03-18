@@ -47,7 +47,7 @@ import axios from 'axios';
 import { VueDraggableNext } from "vue-draggable-next";
 
 export default {
-  name: 'App',
+  name: 'apiRickAndMorty',
   components: {
     draggable: VueDraggableNext   
   },
@@ -61,10 +61,6 @@ export default {
       totalDatos: 0,
       totalPages: 0,
       paginatedData: [],
-      pageSizes: [5, 10, 15],
-      currentSize: 10,
-      paginationVisible: true,
-      loading: false,
     }
   },
   computed: {
@@ -86,6 +82,21 @@ export default {
     },
   },
   methods:{
+    getDataApi(){
+      axios
+      .get('https://rickandmortyapi.com/api/character')
+      .then(response => {
+        this.users = response.data.results;
+        this.users.sort((a, b) => a.name.localeCompare(b.name));
+        this.totalDatos = this.users.length;
+        this.totalPages = Math.ceil(this.totalDatos / this.pageSize);
+        this.paginate();
+        this.loading = false;
+      })
+      .catch(error => {
+        console.log(error);
+      });
+    },
     // Paginación
     paginate() {
       const start = (this.currentPage - 1) * this.pageSize;
@@ -116,19 +127,7 @@ export default {
     },
   },
   mounted() {
-    axios
-    .get('https://rickandmortyapi.com/api/character')
-    .then(response => {
-      this.users = response.data.results;
-      this.users.sort((a, b) => a.name.localeCompare(b.name));
-      this.totalDatos = this.users.length;
-      this.totalPages = Math.ceil(this.totalDatos / this.pageSize);
-      this.paginate();
-      this.loading = false;
-    })
-    .catch(error => {
-      console.log(error);
-    });
+    this.getDataApi();
   }
 }
 </script>

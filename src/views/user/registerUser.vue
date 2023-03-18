@@ -58,7 +58,7 @@
                     >
                       <i
                         class="mdi mdi-eye"
-                        :class="showPassword ? 'mdi mdi-eye-off' : 'mdi mdi-eye'"
+                        :class="showPassword ? 'mdi mdi-eye' : 'mdi mdi-eye-off'"
                       ></i>
                     </button>
                   </div>
@@ -134,10 +134,20 @@ export default {
         app.errors.userPass = "La contraseña es obligatoria.";
         return false;
       }
+      app.errors.userPass = !app.validarPassword(app.form.userPass);
+      if (app.errors.userPass) {
+        app.errors.userPass = "La contraseña es invalida, debe contener mínimo 8 caracteres, una mayúscula y una minúscula";
+        return false;
+      }
       return true;
     },
+    // Validar contraseña
+    validarPassword(password) {
+      const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
+      return regex.test(password);
+    },
     register(){
-      var app = this;
+      let app = this;
       let dataRegister = {
         name: app.form.userName,
         last_name: app.form.userLastName,
@@ -145,7 +155,7 @@ export default {
         password: app.form.userPass,
       }
       if(app.validForm()){
-        axios.post(`${this.$apiUrl}/api/register/user`, dataRegister).then((res) => {
+        axios.post(`${app.$apiUrl}/api/register/user`, dataRegister).then((res) => {
           if(res.data.cod == 200){
             swal.fire({
               icon: "success",
@@ -159,7 +169,7 @@ export default {
               icon: "error",
               title: "Ops",
               text: "El email ya se encuentra registrado",
-              confirmButtonColor: "red",
+              confirmButtonColor: "#d33",
             });
           }
         })

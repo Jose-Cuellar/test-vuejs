@@ -5,8 +5,19 @@
         <div class=" col-12 col-md-12 col-lg-6 col-xl-6 col-sm-12">
           <div style="display:block;" class="row justify-content-center justify-content-sm-center justify-content-md-center justify-content-lg-center justify-content-xl-center align-items-center h-100">
             <div class="login_user">
-              <h2>Inicia sesión</h2>
-              <div style="margin:15px auto;" class="col-12 col-md-12 col-lg-8 col-xl-8 col-sm-12">
+              <h2>Perfil</h2>
+              <!-- <div>
+                <span>
+                  {{ user.name }}
+                </span>
+                <span>
+                  {{ user.last_name }}
+                </span>
+                <span>
+                  {{ user.email }}
+                </span>
+              </div> -->
+              <!-- <div style="margin:15px auto;" class="col-12 col-md-12 col-lg-8 col-xl-8 col-sm-12">
                 <input 
                   type="text"
                   v-model="form.userName"
@@ -41,38 +52,17 @@
                 <div class="mesagge">
                   <span class="errors" v-if="errors.userPass">{{ errors.userPass }}</span>
                 </div>
-              </div>
+              </div> -->
             </div>
             <!-- modal restablecer contraseña -->
             <div id="myModal" class="modal">
               <div class="modal-content">
                 <span @click="closeModal()" class="close">&times;</span>
-                <h2>Restablezca su contraseña</h2>
-                <div style="margin:15px auto;" class="col-10 col-md-10 col-lg-6 col-xl-6 col-sm-10">
-                  <input 
-                    type="text"
-                    v-model="form.emailRestore"
-                    class="form-control color-input-fixed-text"
-                    placeholder="Ingrese su email para restablecer su contraseña"
-                  >
-                  <div class="mesagge">
-                    <span class="errors" v-if="errors.emailRestore">{{ errors.emailRestore }}</span>
-                  </div>
-                </div>
-
-
-                <div class="botones">
-                <div>
-                  <button class="btn_restore_pass" @click="restore()">
-                    Restablecer
-                  </button>
-                </div>
-              </div>
-            
+                <p>Este es mi modal personalizado.</p>
               </div>
             </div>
 
-            <div class="botones">
+            <!-- <div class="botones">
               <div>
                 <button class="btn_login" @click="login()">
                   Iniciar sesión
@@ -84,142 +74,96 @@
               <button class="btn_restore" @click="showModal()">
                 Restablecer contraseña
               </button>
-            </div>
+            </div> -->
           </div>
         </div>
-        <div class="btn_regresar">
+        <!-- <div class="btn_regresar">
           <button class="btn_back" @click="back()">
             Regresar
           </button>
-        </div>
+        </div> -->
       </div>
     </div>
   </div>
 </template>
-
+  
 <script>
-import axios from 'axios';
-import $ from 'jquery';
-import swal from 'sweetalert2';
-
-export default {
-  name: "loginUser",
-  data(){
-    return{
-      form: {
-        userName: null,
-        userPass: null,
-        emailRestore: null,
+  import axios from 'axios';
+  import $ from 'jquery';
+  // import swal from 'sweetalert2';
+  
+  export default {
+    name: "ProfileUser",
+    data(){
+      return{
+        form: {
+          userName: null,
+          userPass: null,
+        },
+        errors: {
+          userName: false,
+          userPass: false,
+        },
+        showPassword: false,
+        modalRestore: false,
+      };
+    },
+    methods:{
+      back(){
+        window.history.back();
       },
-      errors: {
-        userName: false,
-        userPass: false,
-        emailRestore: false,
+      validForm(){
+        let app = this;
+        if(app.form.userName == null){
+          app.errors.userName = "El nombre de usuario o email es obligatorio.";
+          return false;
+        }
+        if(app.form.userPass == null){
+          app.errors.userPass = "La contraseña es obligatoria.";
+          return false;
+        }
+        return true;
       },
-      showPassword: false,
-      modalRestore: false,
-    };
-  },
-  methods:{
-    back(){
-      window.history.back();
+      login(){
+        var app = this;
+        if(app.validForm()){
+          axios.post('login/users').then((res) => {
+            console.log(res);
+          })
+          .catch((res) => {
+            console.log(res);
+          });
+        }
+      },
+      showModal(){
+        $("#myModal").css("display", "block");
+      },
+      closeModal(){
+        $("#myModal").css("display", "none");
+      },
     },
-    validForm(){
-      let app = this;
-      if(app.form.userName == null){
-        app.errors.userName = "El nombre de usuario o email es obligatorio.";
-        return false;
-      }
-      if(app.form.userPass == null){
-        app.errors.userPass = "La contraseña es obligatoria.";
-        return false;
-      }
-      return true;
+    watch: {
+      "form.userName": function(n) {
+        if (!n) {
+          this.errors.userName = "El nombre de usuario o email es obligatorio.";
+        } else {
+          this.errors.userName = false;
+        }
+      },
+      "form.userPass": function(n) {
+        if (!n) {
+          this.errors.userPass = "La contraseña es obligatoria.";
+        } else {
+          this.errors.userPass = false;
+        }
+      },
     },
-    login(){
-      let app = this;
-      const user = {
-        user: app.form.userName,
-        password: app.form.userPass
-      }
-      if(app.validForm()){
-        axios
-        .post(`${app.$apiUrl}/api/login/user`, user)
-        .then((res) => {
-          if(res.data.cod == 200){
-            app.$router.push({ name: "profileUser" });
-            swal.fire({
-              icon: "success",
-              title: "Muy bien!",
-              text: res.data.message,
-              confirmButtonColor: "green",
-            });
-            app.clearForm();
-          }else{
-            swal.fire({
-              icon: "error",
-              title: "Ops",
-              text: res.data.responseMessage,
-              confirmButtonColor: "#d33",
-            });
-          }
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-      }
+    mounted(){
+  
     },
-    register(){
-      this.$router.push({ name: "registerUser" });
-    },
-    validRestore(){
-      let app = this;
-      if(app.form.emailRestore == null){
-        app.errors.emailRestore = "El email es obligatorio.";
-        return false;
-      }
-      return true;
-    },
-    restore(){
-      let app = this;
-      if(app.validRestore()){
-        axios.post('restore/password').then((res) => {
-          console.log(res);
-        })
-        .catch((res) => {
-          console.log(res);
-        });
-      }
-    },
-    showModal(){
-      $("#myModal").css("display", "block");
-    },
-    closeModal(){
-      $("#myModal").css("display", "none");
-    },
-  },
-  watch: {
-    "form.userName": function(n) {
-      if (!n) {
-        this.errors.userName = "El nombre de usuario o email es obligatorio.";
-      } else {
-        this.errors.userName = false;
-      }
-    },
-    "form.userPass": function(n) {
-      if (!n) {
-        this.errors.userPass = "La contraseña es obligatoria.";
-      } else {
-        this.errors.userPass = false;
-      }
-    },
-  },
-  mounted(){
-
-  },
-}
+  }
 </script>
-
+  
 <style scoped>
 .container-fluid{
   padding-right: 0px !important;
@@ -271,18 +215,17 @@ export default {
   margin: 15% auto;
   padding: 20px;
   border: 1px solid #888;
-  width: 60%;
+  width: 80%;
 }
 .close {
-  color: black;
-  font-size: 30px;
+  color: #aaa;
+  float: right;
+  font-size: 28px;
   font-weight: bold;
-  text-align: end;
-  margin-top: -20px;
 }
 .close:hover,
 .close:focus {
-  color: #d33;
+  color: black;
   text-decoration: none;
   cursor: pointer;
 }
@@ -319,7 +262,7 @@ export default {
 .btn_register:hover{
   color: green;
 }
-.btn_restore, .btn_restore_pass{
+.btn_restore{
   max-width: 80%;
   padding: 5px 15px 5px 15px;
   border: 2px solid;
@@ -333,9 +276,6 @@ export default {
 }
 .btn_restore:hover{
   color: red;
-}
-.btn_restore_pass:hover{
-  color: green;
 }
 .btn_regresar{
   width: 80%;
