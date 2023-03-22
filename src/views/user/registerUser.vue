@@ -2,7 +2,7 @@
   <div class="container-fluid">
     <div class="content-register" id="content1-register">
       <div class="row justify-content-center justify-content-sm-center justify-content-md-center justify-content-lg-center justify-content-xl-center align-items-center h-100">
-        <div class=" col-12 col-md-12 col-lg-6 col-xl-6 col-sm-12">
+        <div class="col-12 col-md-12 col-lg-6 col-xl-6 col-sm-12">
           <div style="display:block;" class="row justify-content-center justify-content-sm-center justify-content-md-center justify-content-lg-center justify-content-xl-center align-items-center h-100">
             <div class="login_user">
               <h2>Regístrate</h2>
@@ -109,7 +109,6 @@ export default {
         userPass: false,
       },
       showPassword: false,
-      modalRestore: false,
     };
   },
   methods:{

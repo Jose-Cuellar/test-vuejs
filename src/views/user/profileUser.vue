@@ -1,10 +1,10 @@
 <template>
   <div class="container-fluid">
-    <div class="content-login" id="content1-login">
+    <div class="content-profile" id="content1-profile">
       <div class="row justify-content-center justify-content-sm-center justify-content-md-center justify-content-lg-center justify-content-xl-center align-items-center h-100">
-        <div class=" col-12 col-md-12 col-lg-6 col-xl-6 col-sm-12">
+        <div class="col-12 col-md-12 col-lg-6 col-xl-6 col-sm-12">
           <div style="display:block;" class="row justify-content-center justify-content-sm-center justify-content-md-center justify-content-lg-center justify-content-xl-center align-items-center h-100">
-            <div class="login_user">
+            <div class="profile_user">
               <h2>Perfil</h2>
               <!-- <div>
                 <span>
@@ -54,11 +54,56 @@
                 </div>
               </div> -->
             </div>
-            <!-- modal restablecer contraseña -->
-            <div id="myModal" class="modal">
+            <div class="botones">
+              <button class="btn_modal_update" @click="showModal()">
+                Actualizar mis datos
+              </button>
+            </div>
+            <!-- modal para actualizar datos personales -->
+            <div id="modal_update_data" class="modal">
               <div class="modal-content">
                 <span @click="closeModal()" class="close">&times;</span>
-                <p>Este es mi modal personalizado.</p>
+                <h3>Actualiza tus datos</h3>
+                <div style="margin:15px auto;" class="col-12 col-md-12 col-lg-8 col-xl-8 col-sm-12">
+                  <input 
+                    type="text"
+                    v-model="form.userName"
+                    class="form-control color-input-fixed-text"
+                    placeholder="Nombres"
+                  >
+                  <div class="mesagge">
+                    <span class="errors" v-if="errors.userName">{{ errors.userName }}</span>
+                  </div>
+                </div>
+
+                <div style="margin:15px auto;" class="col-12 col-md-12 col-lg-8 col-xl-8 col-sm-12">
+                  <input 
+                    type="text"
+                    v-model="form.userLastName"
+                    class="form-control color-input-fixed-text"
+                    placeholder="Apellidos"
+                  >
+                  <div class="mesagge">
+                    <span class="errors" v-if="errors.userLastName">{{ errors.userLastName }}</span>
+                  </div>
+                </div>
+
+                <div style="margin:15px auto;" class="col-12 col-md-12 col-lg-8 col-xl-8 col-sm-12">
+                  <input 
+                    type="text"
+                    v-model="form.userEmail"
+                    class="form-control color-input-fixed-text"
+                    placeholder="Email"
+                  >
+                  <div class="mesagge">
+                    <span class="errors" v-if="errors.userEmail">{{ errors.userEmail }}</span>
+                  </div>
+                </div>
+                <div class="botones">
+                  <button class="btn_update_data" @click="update()">
+                    Actualizar
+                  </button>
+                </div>
               </div>
             </div>
 
@@ -90,44 +135,69 @@
 <script>
   import axios from 'axios';
   import $ from 'jquery';
-  // import swal from 'sweetalert2';
+  import swal from 'sweetalert2';
   
   export default {
     name: "ProfileUser",
     data(){
       return{
+        dataUser: [],
         form: {
           userName: null,
-          userPass: null,
+          userLastName: null,
+          userEmail: null,
         },
         errors: {
           userName: false,
-          userPass: false,
+          userLastName: false,
+          userEmail: false,
         },
         showPassword: false,
-        modalRestore: false,
       };
     },
     methods:{
+      getDataUser(){
+        axios
+        .get("api/get/user")
+        .then((res) => {
+          if(res.data.cod == 0){
+            this.dataUser = res.data.data;
+          }
+        })
+        .catch((error) => {
+          swal.fire({
+            icon: "error",
+            title: "Ops",
+            text: error.response.data.message,
+            confirmButtonColor: "#d33",
+          });
+        });
+      },
       back(){
         window.history.back();
       },
       validForm(){
         let app = this;
         if(app.form.userName == null){
-          app.errors.userName = "El nombre de usuario o email es obligatorio.";
+          app.errors.userName = "El nombre de usuario es obligatorio.";
           return false;
         }
-        if(app.form.userPass == null){
-          app.errors.userPass = "La contraseña es obligatoria.";
+        if(app.form.userLastName == null){
+          app.errors.userLastName = "El apellido de usuario es obligatorio.";
+          return false;
+        }
+        if(app.form.userEmail == null){
+          app.errors.userEmail = "El email es obligatorio.";
           return false;
         }
         return true;
       },
-      login(){
+      update(){
         var app = this;
         if(app.validForm()){
-          axios.post('login/users').then((res) => {
+          axios
+          .post('api/update/user')
+          .then((res) => {
             console.log(res);
           })
           .catch((res) => {
@@ -136,25 +206,32 @@
         }
       },
       showModal(){
-        $("#myModal").css("display", "block");
+        $("#modal_update_data").css("display", "block");
       },
       closeModal(){
-        $("#myModal").css("display", "none");
+        $("#modal_update_data").css("display", "none");
       },
     },
     watch: {
       "form.userName": function(n) {
         if (!n) {
-          this.errors.userName = "El nombre de usuario o email es obligatorio.";
+          this.errors.userName = "El nombre de usuario es obligatorio.";
         } else {
           this.errors.userName = false;
         }
       },
-      "form.userPass": function(n) {
+      "form.userLastName": function(n) {
         if (!n) {
-          this.errors.userPass = "La contraseña es obligatoria.";
+          this.errors.userLastName = "El apellido de usuario es obligatorio.";
         } else {
-          this.errors.userPass = false;
+          this.errors.userLastName = false;
+        }
+      },
+      "form.userEmail": function(n) {
+        if (!n) {
+          this.errors.userEmail = "El email es obligatorio.";
+        } else {
+          this.errors.userEmail = false;
         }
       },
     },
@@ -166,18 +243,21 @@
   
 <style scoped>
 .container-fluid{
-  padding-right: 0px !important;
-  padding-left: 0px !important;
-  overflow: hidden;
-  height: auto;
-}
-.content-login {
-  padding-top: 10%;
-  padding-bottom: 10%;
+  width: 100%;
   height: 100%;
+  background-image: url("../../assets/imgs/fondo_perfil.jpg");
+  background-repeat: no-repeat;
+  background-size: cover;
 }
-#content1-login {
-  /* background-color: aqua; */
+.content-profile {
+  width: 100%;
+  height: 100vh;
+}
+#content1-profile {
+  /* background-image: url("../../assets/imgs/fondo_perfil.jpg"); */
+}
+.profile_user{
+  color: white;
 }
 
 /* Icono para ver contraseña */
@@ -212,20 +292,21 @@
 }
 .modal-content {
   background-color: #fefefe;
-  margin: 15% auto;
+  margin: 10% auto;
   padding: 20px;
   border: 1px solid #888;
-  width: 80%;
+  width: 50%;
 }
 .close {
-  color: #aaa;
-  float: right;
-  font-size: 28px;
+  color: black;
+  font-size: 30px;
   font-weight: bold;
+  text-align: end;
+  margin-top: -20px;
 }
 .close:hover,
 .close:focus {
-  color: black;
+  color: #d33;
   text-decoration: none;
   cursor: pointer;
 }
@@ -234,21 +315,21 @@
   margin: auto;
   display: grid;
 }
-.btn_login{
+.btn_modal_update{
   padding: 5px 15px 5px 15px;
   border: 2px solid;
   cursor: pointer;
-  background-color: white;
+  background-color: transparent;
   color: #008CBA;
   border-radius: 30px;
   font-size: 15px;
   font-weight: bold;
   margin: 20px 10px 5px 0px;
 }
-.btn_login:hover{
+.btn_modal_update:hover{
   color: green;
 }
-.btn_register{
+.btn_update_data{
   padding: 5px 15px 5px 15px;
   border: 2px solid;
   cursor: pointer;
@@ -259,7 +340,7 @@
   font-weight: bold;
   margin: 20px 0px 5px 0px;
 }
-.btn_register:hover{
+.btn_update_data:hover{
   color: green;
 }
 .btn_restore{
