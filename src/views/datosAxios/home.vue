@@ -1,62 +1,64 @@
 <template>
-  <div id="aplicacion">
-    <h1 style="color:darkblue;">¡Bienvenidos!</h1><br>
-    <div v-if="hide_btn_get">
-      <button class="btn_get" @click="recuperarPost()">
-        Click para mostrar los datos
-      </button>
-    </div>
-    <br><br>
-    <div v-if="show_table">
-      <hr>
-      <h2>Datos obtenidos con axios post</h2>
-        <table class="table table-striped">
-          <thead class="thead-light">
-            <tr>
-              <th scope="col">ID</th>
-              <th scope="col">TITLE</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="nota in notas.slice((currentPage - 1) * 10, currentPage * 10)" :key="nota.id">
-              <td>{{ nota.id }}</td>
-              <td>{{ nota.title }}</td>
-            </tr>
-          </tbody>
-        </table>
-
-        <!-- Paginación -->
-        <div class="d-flex justify-content-center">
-          <nav aria-label="Page navigation example">
-            <ul class="pagination">
-              <li class="page-item" :class="{disabled: currentPage === 1}">
-                <a class="previous page-link" href="#" @click.prevent="prevPage()">
-                  Anterior
-                </a>
-              </li>
-              <li class="page-item" v-for="page in pages" :key="page" :class="{active: currentPage === page}">
-                <a class="page-link" href="#" @click.prevent="changePage(page)">
-                  {{ page }}
-                </a>
-              </li>
-              <li class="page-item" :class="{disabled: currentPage === totalPages}">
-                <a class="next page-link" href="#" @click.prevent="nextPage()">
-                  Siguiente
-                </a>
-              </li>
-            </ul>
-          </nav>
-        </div>
-
-        <div class="botones">
-          <!-- <button class="btn_back" @click="back()">
-            Regresar
-          </button> -->
-          <button v-if="show_btn" class="btn_download" @click="downloadExcel()">
-            Descargar excel
-          </button>
-        </div>
-      <hr>
+  <div class="container-fluid">
+    <div class="content_home">
+      <h1 style="color:white; padding:50px 0px 0px 0px">¡Bienvenidos!</h1><br>
+      <div v-if="hide_btn_get">
+        <button class="btn_get" @click="recuperarPost()">
+          Click para mostrar los datos
+        </button>
+      </div>
+      <br><br>
+      <div v-if="show_table">
+        <hr>
+        <h2 style="color:white;">Datos obtenidos con axios post</h2>
+          <table class="table table-striped">
+            <thead class="thead-light">
+              <tr>
+                <th scope="col">ID</th>
+                <th scope="col">TITLE</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="nota in notas.slice((currentPage - 1) * 10, currentPage * 10)" :key="nota.id">
+                <td>{{ nota.id }}</td>
+                <td>{{ nota.title }}</td>
+              </tr>
+            </tbody>
+          </table>
+  
+          <!-- Paginación -->
+          <div class="d-flex justify-content-center">
+            <nav aria-label="Page navigation example">
+              <ul class="pagination">
+                <li class="page-item" :class="{disabled: currentPage === 1}">
+                  <a class="previous page-link" href="#" @click.prevent="prevPage()">
+                    Anterior
+                  </a>
+                </li>
+                <li class="page-item" v-for="page in pages" :key="page" :class="{active: currentPage === page}">
+                  <a class="page-link" href="#" @click.prevent="changePage(page)">
+                    {{ page }}
+                  </a>
+                </li>
+                <li class="page-item" :class="{disabled: currentPage === totalPages}">
+                  <a class="next page-link" href="#" @click.prevent="nextPage()">
+                    Siguiente
+                  </a>
+                </li>
+              </ul>
+            </nav>
+          </div>
+  
+          <div class="botones">
+            <!-- <button class="btn_back" @click="back()">
+              Regresar
+            </button> -->
+            <button v-if="show_btn" class="btn_download" @click="downloadExcel()">
+              Descargar excel
+            </button>
+          </div>
+        <hr>
+      </div>
     </div>
   </div>
 </template>
@@ -67,7 +69,8 @@ import * as XLSX from 'xlsx';
 import swal from 'sweetalert2';
 
 export default {
-  name: 'pruebasVue',
+  name: 'homePage',
+
   data(){
     return{
       notas: [],
@@ -199,10 +202,18 @@ export default {
 </script>
 
 <style scoped>
-  #aplicacion{
-    max-width: 80%;
-    padding: 100px 10px 50px 10px;
+  .container-fluid{
+    width: 100%;
     margin: auto;
+    padding: 15% 5% 10% 5%;
+    background-image: url("../../assets/imgs/imgs_page/fondo_home.jpeg");
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    background-size: cover;
+  }
+  .content_home{
+    margin: auto;
+    width: 100%;
   }
   th, td{
     text-align:left;
@@ -213,7 +224,7 @@ export default {
     padding: 5px 15px 5px 15px;
     border: 2px solid;
     cursor: pointer;
-    background-color: white;
+    background-color: transparent;
     color: #008CBA;
     border-radius: 30px;
     font-weight: bold;
@@ -248,7 +259,7 @@ export default {
     padding: 5px 15px 5px 15px;
     border: 2px solid;
     cursor: pointer;
-    background-color: white;
+    background-color: transparent;
     color: #008CBA;
     border-radius: 30px;
     font-weight: bold;

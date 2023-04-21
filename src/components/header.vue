@@ -9,23 +9,28 @@
         <ul class="ul_header">
           <template v-for="item in itemsHeader" :key="item.id">
             <router-link class="routes_navbar" v-if="item.subItem.length == 0" :to="{ name: item.routeName }">
-              <span>{{ item.text }}</span>
+              <span><b>{{ item.text }}</b></span>
             </router-link>
 
             <ul v-else-if="item.subItem.length > 0">
               <li v-for="subItem in item.subItem" :key="subItem.id">
                 <router-link :to="{ name: subItem.routeName }">
-                  <span>{{ subItem.text }}</span>
+                  <span><b>{{ subItem.text }}</b></span>
                 </router-link>
               </li>
             </ul>
           </template>
 
-          <ul class="ul_header_user">
+          <ul v-if="!user" class="ul_header_user">
             <template v-for="itemUser in itemsHeaderUser" :key="itemUser.id">
               <router-link class="routes_navbar_user" v-if="itemUser.subItem.length == 0" :to="{ name: itemUser.routeName }">
-                <span>{{ itemUser.text }}</span>
+                <span><b>{{ itemUser.text }}</b></span>
               </router-link>
+            </template>
+          </ul>
+          <ul v-else class="ul_header_user">
+            <template v-for="itemUser in itemsLogout" :key="itemUser.id">
+              <span class="routes_navbar_user" @click="logout()"><b>{{ itemUser.text }}</b></span>
             </template>
           </ul>
         </ul>
@@ -40,6 +45,7 @@ export default {
   data(){
     return{
       showSubItems: false,
+      user: JSON.parse(sessionStorage.getItem('user')),
       
       // Items de navegación
       itemsHeader: [
@@ -84,8 +90,40 @@ export default {
           subItem: []
         },
       ],
+
+      // Item paracerrar sesión
+      itemsLogout: [
+        {
+          id: 6,
+          routeName: "addCollectors",
+          text: "Añadir recolectores",
+          subItem: []
+        },
+        {
+          id: 7,
+          routeName: "logout",
+          text: "Cerrar sesión",
+          subItem: []
+        }
+      ]
     };
-  }
+  },
+  methods: {
+    handleStorageChange(event) {
+      // Si el objeto de usuario existe en sessionStorage, actualizar el estado del componente
+      if (event.key === 'user') {
+        this.user = JSON.parse(event.newValue);
+      }
+    },
+    logout(){
+      sessionStorage.removeItem('user');
+      this.$router.push({ name: "loginUser" });
+    },
+  },
+  created() {
+    // Observar cambios en el sessionStorage
+    window.addEventListener('storage', this.handleStorageChange);
+  },
 }
 </script>
   
@@ -93,11 +131,13 @@ export default {
 .contain_header{
   z-index: 10;
   position: fixed;
+  /* position: sticky; */
   width: 100%;
   height: auto;
-  background-color: #E7E7E7;
+  /* background-color: rgba(255, 255, 255, 0.5); */
+  background-color: white;
   padding: 20px 5px 20px 5px;
-  border-bottom: 2px solid darkblue;
+  border-bottom: 2px solid #3F2212;
 }
 .ul_header{
   display: flex;
@@ -110,7 +150,7 @@ export default {
 }
 .routes_navbar{
   text-decoration: none;
-  color: darkblue;
+  color: #3F2212;
 }
 .ul_header_user .routes_navbar_user{
   list-style-type: none;
@@ -122,6 +162,7 @@ export default {
 }
 .routes_navbar_user{
   text-decoration: none;
-  color: darkblue;
+  color: #3F2212;
+  cursor: pointer;
 }
 </style>

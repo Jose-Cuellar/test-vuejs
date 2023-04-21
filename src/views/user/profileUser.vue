@@ -6,53 +6,7 @@
           <div style="display:block;" class="row justify-content-center justify-content-sm-center justify-content-md-center justify-content-lg-center justify-content-xl-center align-items-center h-100">
             <div class="profile_user">
               <h2>Perfil</h2>
-              <!-- <div>
-                <span>
-                  {{ user.name }}
-                </span>
-                <span>
-                  {{ user.last_name }}
-                </span>
-                <span>
-                  {{ user.email }}
-                </span>
-              </div> -->
-              <!-- <div style="margin:15px auto;" class="col-12 col-md-12 col-lg-8 col-xl-8 col-sm-12">
-                <input 
-                  type="text"
-                  v-model="form.userName"
-                  class="form-control color-input-fixed-text"
-                  placeholder="Email"
-                >
-                <div class="mesagge">
-                  <span class="errors" v-if="errors.userName">{{ errors.userName }}</span>
-                </div>
-              </div>
-              <div style="margin:15px auto;" class="col-12 col-md-12 col-lg-8 col-xl-8 col-sm-12">
-                <div style="display:flex;">
-                  <input
-                    :type="showPassword ? 'text' : 'password'"
-                    v-model="form.userPass"
-                    class="form-control color-input-fixed-text"
-                    placeholder="Contraseña"
-                  >
-                  <div class="input-group-append">
-                    <button
-                      class="btn btn-eye-pass"
-                      type="button"
-                      @click="showPassword = !showPassword"
-                    >
-                      <i
-                        class="mdi mdi-eye"
-                        :class="showPassword ? 'mdi mdi-eye' : 'mdi mdi-eye-off'"
-                      ></i>
-                    </button>
-                  </div>
-                </div>
-                <div class="mesagge">
-                  <span class="errors" v-if="errors.userPass">{{ errors.userPass }}</span>
-                </div>
-              </div> -->
+              <span>Bienvenido <b style="color:#E30000;">{{ form.userName }} {{ form.userLastName }}</b></span>
             </div>
             <div class="botones">
               <button class="btn_modal_update" @click="showModal()">
@@ -94,6 +48,7 @@
                     v-model="form.userEmail"
                     class="form-control color-input-fixed-text"
                     placeholder="Email"
+                    disabled
                   >
                   <div class="mesagge">
                     <span class="errors" v-if="errors.userEmail">{{ errors.userEmail }}</span>
@@ -106,27 +61,8 @@
                 </div>
               </div>
             </div>
-
-            <!-- <div class="botones">
-              <div>
-                <button class="btn_login" @click="login()">
-                  Iniciar sesión
-                </button>
-                <button class="btn_register" @click="register()">
-                  Registrarme
-                </button>
-              </div>
-              <button class="btn_restore" @click="showModal()">
-                Restablecer contraseña
-              </button>
-            </div> -->
           </div>
         </div>
-        <!-- <div class="btn_regresar">
-          <button class="btn_back" @click="back()">
-            Regresar
-          </button>
-        </div> -->
       </div>
     </div>
   </div>
@@ -142,6 +78,7 @@
     data(){
       return{
         dataUser: [],
+        user: null,
         form: {
           userName: null,
           userLastName: null,
@@ -157,21 +94,13 @@
     },
     methods:{
       getDataUser(){
-        axios
-        .get("api/get/user")
-        .then((res) => {
-          if(res.data.cod == 0){
-            this.dataUser = res.data.data;
-          }
-        })
-        .catch((error) => {
-          swal.fire({
-            icon: "error",
-            title: "Ops",
-            text: error.response.data.message,
-            confirmButtonColor: "#d33",
-          });
-        });
+        this.user = JSON.parse(sessionStorage.getItem("user"));
+        if(this.user == null){
+          this.$router.push({ name: "loginUser" })
+        }
+        this.form.userName = this.user.name;
+        this.form.userLastName = this.user.last_name;
+        this.form.userEmail = this.user.email;
       },
       back(){
         window.history.back();
@@ -194,14 +123,33 @@
       },
       update(){
         var app = this;
+        let data = {
+          user_id: app.user.id,
+          name: app.form.userName,
+          last_name: app.form.userLastName,
+          email: app.form.userEmail,
+        }
         if(app.validForm()){
           axios
-          .post('api/update/user')
+          .post(`${app.$apiUrl}/api/update/user`, data)
           .then((res) => {
-            console.log(res);
+            if(res.data.cod == 200){
+              swal.fire({
+                icon: "success",
+                title: "Excelente!",
+                text: res.data.message,
+                confirmButtonColor: "green",
+              });
+              $("#modal_update_data").css("display", "none");
+            }
           })
           .catch((res) => {
-            console.log(res);
+            swal.fire({
+              icon: "error",
+              title: "Ops",
+              text: res.data.message,
+              confirmButtonColor: "#d33",
+            });
           });
         }
       },
@@ -235,8 +183,12 @@
         }
       },
     },
+    // created(){
+    //   this.user = JSON.parse(sessionStorage.getItem('user'));
+    //   console.log('this.user profile ', this.user);
+    // },
     mounted(){
-  
+      this.getDataUser();
     },
   }
 </script>
@@ -245,7 +197,8 @@
 .container-fluid{
   width: 100%;
   height: 100%;
-  background-image: url("../../assets/imgs/fondo_perfil.jpg");
+  background-image: url("../../assets/imgs/imgs_page/fondo_perfil.jpg");
+  background-attachment: fixed;
   background-repeat: no-repeat;
   background-size: cover;
 }
@@ -359,7 +312,7 @@
   color: red;
 }
 .btn_regresar{
-  width: 80%;
+  width: 90%;
   text-align: start;
 }
 .btn_back{

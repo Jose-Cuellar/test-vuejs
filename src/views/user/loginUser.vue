@@ -145,8 +145,9 @@ export default {
         axios
         .post(`${app.$apiUrl}/api/login/user`, user)
         .then((res) => {
-          console.log('res: ', JSON.stringify(res));
           if(res.data.cod == 200){
+            let user = res.data.data;
+            sessionStorage.setItem("user", JSON.stringify(user));
             app.$router.push({ name: "profileUser" });
             swal.fire({
               icon: "success",
@@ -168,6 +169,15 @@ export default {
           console.log(error);
         });
       }
+    },
+    clearForm(){
+      let app = this;
+      app.form.userName = null;
+      app.form.userPass = null;
+      setTimeout(() => {
+        app.errors.userName = false;
+        app.errors.userPass = false;
+      },0);
     },
     register(){
       this.$router.push({ name: "registerUser" });
@@ -222,10 +232,13 @@ export default {
 
 <style scoped>
 .container-fluid{
-  padding-right: 0px !important;
-  padding-left: 0px !important;
-  overflow: hidden;
-  height: auto;
+  width: 100%;
+  margin: auto;
+  padding: 8% 5% 5% 5%;
+  background-image: url("../../assets/imgs/imgs_page/fondo_login.jpg");
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+  background-size: cover;
 }
 .content-login {
   padding-top: 10%;
@@ -234,6 +247,9 @@ export default {
 }
 #content1-login {
   /* background-color: aqua; */
+}
+.login_user h2{
+  color: white;
 }
 
 /* Icono para ver contraseña */
@@ -291,62 +307,94 @@ export default {
   margin: auto;
   display: grid;
 }
-.btn_login{
+.btn_login {
   padding: 5px 15px 5px 15px;
   border: 2px solid;
   cursor: pointer;
-  background-color: white;
-  color: #008CBA;
+  background-color: transparent;
+  color: white;
   border-radius: 30px;
   font-size: 15px;
   font-weight: bold;
   margin: 20px 10px 5px 0px;
+  background: url(../../assets/imgs/imgs_page/brillo_white.png) no-repeat;
+  background-position: -100px 0px;
+  transition: background-position 1s;
 }
-.btn_login:hover{
-  color: green;
+.btn_login:hover {
+  animation: brillo 1.5s linear forwards;
+}
+@keyframes brillo {
+  from {
+    background-position: -100px 0px;
+  }
+  to {
+    background-position: 500px 0px;
+  }
 }
 .btn_register{
   padding: 5px 15px 5px 15px;
   border: 2px solid;
   cursor: pointer;
-  background-color: white;
-  color: #008CBA;
+  background-color: transparent;
+  color: white;
   border-radius: 30px;
   font-size: 15px;
   font-weight: bold;
   margin: 20px 0px 5px 0px;
+  background: url(../../assets/imgs/imgs_page/brillo_white.png) no-repeat;
+  background-position: -100px 0px;
+  transition: background-position 1s;
 }
 .btn_register:hover{
-  color: green;
+  animation: brillo 1.5s linear forwards;
 }
-.btn_restore, .btn_restore_pass{
+.btn_restore{
   max-width: 80%;
   padding: 5px 15px 5px 15px;
   border: 2px solid;
   cursor: pointer;
-  background-color: white;
+  background-color: transparent;
+  color: white;
+  border-radius: 30px;
+  font-size: 15px;
+  font-weight: bold;
+  margin: 10px auto 0px auto;
+  background: url(../../assets/imgs/imgs_page/brillo_red.png) no-repeat;
+  background-position: -100px 0px;
+  transition: background-position 1s;
+}
+.btn_restore:hover{
+  animation: brillo 1.5s linear forwards;
+}
+.btn_restore_pass{
+  max-width: 80%;
+  padding: 5px 15px 5px 15px;
+  border: 2px solid;
+  cursor: pointer;
+  background-color: transparent;
   color: #008CBA;
   border-radius: 30px;
   font-size: 15px;
   font-weight: bold;
   margin: 10px auto 0px auto;
-}
-.btn_restore:hover{
-  color: red;
+  background: url(../../assets/imgs/imgs_page/brillo_red.png) no-repeat;
+  background-position: -100px 0px;
+  transition: background-position 1s;
 }
 .btn_restore_pass:hover{
   color: green;
 }
 .btn_regresar{
-  width: 80%;
+  width: 100%;
   text-align: start;
 }
 .btn_back{
   padding: 5px 15px 5px 15px;
   border: 2px solid;
   cursor: pointer;
-  background-color: white;
-  color: #008CBA;
+  background-color: transparent;
+  color: white;
   border-radius: 30px;
   font-size: 15px;
   font-weight: bold;

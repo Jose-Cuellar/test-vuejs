@@ -341,7 +341,7 @@ export default {
   color: red;
 }
 .btn_regresar{
-  width: 80%;
+  width: 90%;
   text-align: start;
 }
 .btn_back{

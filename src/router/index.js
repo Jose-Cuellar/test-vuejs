@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router';
 
-import Home from '../views/datosAxios/pruebas.vue';
+import Home from '../views/datosAxios/home.vue';
 import Axios from '../views/datosAxios/pruebaAxios.vue';
 import RickAndMorty from '../views/datosAxios/apiRickAndMorty.vue';
 
@@ -46,6 +46,11 @@ const routes = [
     name: 'profileUser',
     component: profileUser
   },
+  // {
+  //   path: '/user/add/collectors',
+  //   name: 'addCollectors',
+  //   component: addCollectors
+  // },
 
 ];
 
