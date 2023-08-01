@@ -159,6 +159,11 @@
       closeModal(){
         $("#modal_update_data").css("display", "none");
       },
+      disabledBack(){
+        window.location.hash="no-back-button";
+        window.location.hash="Again-No-back-button" //chrome
+        window.onhashchange=function(){window.location.hash="";}
+      },
     },
     watch: {
       "form.userName": function(n) {
@@ -189,6 +194,7 @@
     // },
     mounted(){
       this.getDataUser();
+      this.disabledBack();
     },
   }
 </script>
@@ -240,7 +246,6 @@
   top: 0;
   width: 100%;
   height: 100%;
-  overflow: auto;
   background-color: rgba(0, 0, 0, 0.4);
 }
 .modal-content {

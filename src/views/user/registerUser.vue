@@ -5,7 +5,7 @@
         <div class="col-12 col-md-12 col-lg-6 col-xl-6 col-sm-12">
           <div style="display:block;" class="row justify-content-center justify-content-sm-center justify-content-md-center justify-content-lg-center justify-content-xl-center align-items-center h-100">
             <div class="login_user">
-              <h2>Regístrate</h2>
+              <h2 style="color:white;">Regístrate</h2>
               <div style="margin:15px auto;" class="col-12 col-md-12 col-lg-8 col-xl-8 col-sm-12">
                 <input 
                   type="text"
@@ -72,6 +72,10 @@
               <div>
                 <button class="btn_register" @click="register()">
                   Registrarme
+                </button><br>
+                <span style="color:white;">O regístrate con Google</span>
+                <button class="btn_register_google" @click="registerGoogle()">
+                  <img src="../../assets/imgs/imgs_redes/google.png">
                 </button>
               </div>
             </div>
@@ -93,7 +97,7 @@ import axios from 'axios';
 import swal from 'sweetalert2';
 
 export default {
-  name: "loginUser",
+  name: "registerUser",
   data(){
     return{
       form: {
@@ -177,6 +181,21 @@ export default {
         });
       }
     },
+    registerGoogle () {
+      this.gAuth
+      .signIn()
+      .then(GoogleUser => {
+        console.log('currentUser: ', JSON.stringify(GoogleUser));
+        // on success do something
+        console.log('GoogleUser', GoogleUser)
+        console.log('getId', GoogleUser.getId())
+        console.log('getBasicProfile', GoogleUser.getBasicProfile())
+        console.log('getAuthResponse', GoogleUser.getAuthResponse())
+      })
+      .catch(error => {
+        console.log('error', error)
+      })
+    },
     clearForm(){
       let app = this;
       app.form.userName = null;
@@ -229,15 +248,20 @@ export default {
   
 <style scoped>
 .container-fluid{
-  padding-right: 0px !important;
-  padding-left: 0px !important;
-  overflow: hidden;
-  height: auto;
+  width: 100%;
+  margin: auto;
+  padding: 8% 5% 5% 5%;
+  --opacidad-negro: 0.5;
+  background-image: linear-gradient(rgba(0, 0, 0, var(--opacidad-negro)), 
+  rgba(0, 0, 0, var(--opacidad-negro))), 
+  url("../../assets/imgs/imgs_page/fondo_register.jpg");
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+  background-size: cover;
 }
 .content-register {
-  padding-top: 10%;
-  padding-bottom: 10%;
-  height: 100%;
+  padding-top: 8%;
+  padding-bottom: 5%;
 }
 #content1-register {
   /* background-color: aqua; */
@@ -247,7 +271,7 @@ export default {
 .btn-eye-pass{
   border: none;
   position: absolute;
-  margin-left: -50px;
+  margin: -2px -45px;
   font-size: 19px;
 }
 .mdi-eye::before{
@@ -261,85 +285,52 @@ export default {
   color: red;
   font-size: 15px;
 }
-/* Modal de restablecimiento de contraseña */
-.modal {
-  display: none;
-  position: fixed;
-  z-index: 1;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  overflow: auto;
-  background-color: rgba(0, 0, 0, 0.4);
-}
-.modal-content {
-  background-color: #fefefe;
-  margin: 15% auto;
-  padding: 20px;
-  border: 1px solid #888;
-  width: 80%;
-}
-.close {
-  color: #aaa;
-  float: right;
-  font-size: 28px;
-  font-weight: bold;
-}
-.close:hover,
-.close:focus {
-  color: black;
-  text-decoration: none;
-  cursor: pointer;
-}
 .botones{
   width: 50%;
   margin: auto;
   display: grid;
 }
-.btn_login{
-  padding: 5px 15px 5px 15px;
-  border: 2px solid;
-  cursor: pointer;
-  background-color: white;
-  color: #008CBA;
-  border-radius: 30px;
-  font-size: 15px;
-  font-weight: bold;
-  margin: 20px 10px 5px 0px;
-}
-.btn_login:hover{
-  color: green;
-}
 .btn_register{
   padding: 5px 15px 5px 15px;
   border: 2px solid;
   cursor: pointer;
-  background-color: white;
-  color: #008CBA;
+  background-color: transparent;
+  color: white;
   border-radius: 30px;
   font-size: 15px;
   font-weight: bold;
-  margin: 20px 0px 5px 0px;
+  margin: 20px 0px 10px 0px;
+  background: url(../../assets/imgs/imgs_page/brillo_white.png) no-repeat;
+  background-position: -100px 0px;
+  transition: background-position 1s;
 }
-.btn_register:hover{
-  color: green;
+.btn_register:hover {
+  animation: brillo 1.5s linear forwards;
 }
-.btn_restore{
-  max-width: 80%;
-  padding: 5px 15px 5px 15px;
+@keyframes brillo {
+  from {
+    background-position: -100px 0px;
+  }
+  to {
+    background-position: 500px 0px;
+  }
+}
+
+.btn_register_google{
+  width: 50%;
+  padding: 3px 15px 3px 15px;
   border: 2px solid;
   cursor: pointer;
-  background-color: white;
-  color: #008CBA;
+  background-color: transparent;
+  color: white;
   border-radius: 30px;
-  font-size: 15px;
-  font-weight: bold;
-  margin: 10px auto 0px auto;
+  margin: 5px 0px 0px 0px;
 }
-.btn_restore:hover{
-  color: red;
+.btn_register_google img{
+  width: 20px;
+  height: 20px;
 }
+
 .btn_regresar{
   width: 90%;
   text-align: start;
@@ -348,8 +339,8 @@ export default {
   padding: 5px 15px 5px 15px;
   border: 2px solid;
   cursor: pointer;
-  background-color: white;
-  color: #008CBA;
+  background-color: transparent;
+  color: white;
   border-radius: 30px;
   font-size: 15px;
   font-weight: bold;
@@ -357,5 +348,10 @@ export default {
 }
 .btn_back:hover{
   color: red;
+}
+.form-control{
+  border-radius: 30px;
+  border: none;
+  outline: none;
 }
 </style>

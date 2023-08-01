@@ -21,9 +21,12 @@ export default {
 
 
 <style>
-body, html {
+body {
   margin: 0px;
   padding: 0px;
+}
+::-webkit-scrollbar {
+  display: none;
 }
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;

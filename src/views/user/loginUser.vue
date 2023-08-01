@@ -12,6 +12,7 @@
                   v-model="form.userName"
                   class="form-control color-input-fixed-text"
                   placeholder="Email"
+                  id="user_email"
                 >
                 <div class="mesagge">
                   <span class="errors" v-if="errors.userName">{{ errors.userName }}</span>
@@ -24,6 +25,7 @@
                     v-model="form.userPass"
                     class="form-control color-input-fixed-text"
                     placeholder="Contraseña"
+                    id="user_pass"
                   >
                   <div class="input-group-append">
                     <button
@@ -149,12 +151,15 @@ export default {
             let user = res.data.data;
             sessionStorage.setItem("user", JSON.stringify(user));
             app.$router.push({ name: "profileUser" });
-            swal.fire({
-              icon: "success",
-              title: "Muy bien!",
-              text: res.data.message,
-              confirmButtonColor: "green",
-            });
+            // swal.fire({
+            //   icon: "success",
+            //   title: "Muy bien!",
+            //   text: res.data.message,
+            //   confirmButtonColor: "green",
+            // });
+            setTimeout(() => {
+              location.reload();
+            }, 0);
             app.clearForm();
           }else{
             swal.fire({
@@ -235,15 +240,17 @@ export default {
   width: 100%;
   margin: auto;
   padding: 8% 5% 5% 5%;
-  background-image: url("../../assets/imgs/imgs_page/fondo_login.jpg");
+  --opacidad-negro: 0.5;
+  background-image: linear-gradient(rgba(0, 0, 0, var(--opacidad-negro)), 
+  rgba(0, 0, 0, var(--opacidad-negro))), 
+  url("../../assets/imgs/imgs_page/fondo_login.jpg");
   background-attachment: fixed;
   background-repeat: no-repeat;
   background-size: cover;
 }
 .content-login {
-  padding-top: 10%;
-  padding-bottom: 10%;
-  height: 100%;
+  padding-top: 8%;
+  padding-bottom: 5%;
 }
 #content1-login {
   /* background-color: aqua; */
@@ -256,7 +263,7 @@ export default {
 .btn-eye-pass{
   border: none;
   position: absolute;
-  margin-left: -50px;
+  margin: -2px -45px;
   font-size: 19px;
 }
 .mdi-eye::before{
@@ -279,7 +286,6 @@ export default {
   top: 0;
   width: 100%;
   height: 100%;
-  overflow: auto;
   background-color: rgba(0, 0, 0, 0.4);
 }
 .modal-content {
@@ -402,5 +408,10 @@ export default {
 }
 .btn_back:hover{
   color: red;
+}
+#user_email, #user_pass {
+  border-radius: 30px;
+  border: none;
+  outline: none;
 }
 </style>

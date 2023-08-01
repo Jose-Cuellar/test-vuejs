@@ -8,6 +8,10 @@ import RickAndMorty from '../views/datosAxios/apiRickAndMorty.vue';
 import registerUser from '../views/user/registerUser.vue';
 import loginUser from '../views/user/loginUser.vue';
 import profileUser from '../views/user/profileUser.vue';
+// import goManagement from '../views/user/addCollectors.vue' ;
+import addCollectors from '../views/user/addCollectors.vue';
+import registerFertilization from '../views/user/registerFertilization.vue';
+
 
 const routes = [
   /***** Rutas para todos los usuarios *****/
@@ -47,11 +51,20 @@ const routes = [
     component: profileUser
   },
   // {
-  //   path: '/user/add/collectors',
-  //   name: 'addCollectors',
-  //   component: addCollectors
+  //   path: '/user/management',
+  //   name: 'goManagement',
+  //   component: goManagement
   // },
-
+  {
+    path: '/user/add/collectors',
+    name: 'addCollectors',
+    component: addCollectors
+  },
+  {
+    path: '/user/add/fertilization',
+    name: 'registerFertilization',
+    component: registerFertilization
+  },
 ];
 
 const router = createRouter({

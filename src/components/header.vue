@@ -7,20 +7,35 @@
       <!-- fin iconos -->
       <nav>
         <ul class="ul_header">
-          <template v-for="item in itemsHeader" :key="item.id">
-            <router-link class="routes_navbar" v-if="item.subItem.length == 0" :to="{ name: item.routeName }">
-              <span><b>{{ item.text }}</b></span>
-            </router-link>
+          <!-- Items para navegar en la página sin estar logueado -->
+          <ul class="header_landing" v-if="!user">
+            <template v-for="item in itemsHeader" :key="item.id">
+              <router-link class="routes_navbar" v-if="item.subItem.length == 0" :to="{ name: item.routeName }">
+                <span><b>{{ item.text }}</b></span>
+              </router-link>
+              <ul v-else-if="item.subItem.length > 0">
+                <li v-for="subItem in item.subItem" :key="subItem.id">
+                  <router-link :to="{ name: subItem.routeName }">
+                    <span><b>{{ subItem.text }}</b></span>
+                  </router-link>
+                </li>
+              </ul>
+            </template>
+          </ul>
 
-            <ul v-else-if="item.subItem.length > 0">
-              <li v-for="subItem in item.subItem" :key="subItem.id">
-                <router-link :to="{ name: subItem.routeName }">
-                  <span><b>{{ subItem.text }}</b></span>
-                </router-link>
-              </li>
-            </ul>
-          </template>
+          <!-- Items para gestionar la información como usuario logueado -->
+          <ul class="management" v-else>
+            <div>
+              <div class="routes_navbar" v-for="item in itemsHeaderUserLoged" :key="item.id" @click="selectItem(item)">
+                <span><b>{{ item.text }}</b></span>
+                <div class="subitems" v-if="selectedItem === item">
+                  <div @click="goLink(subitem)" v-for="subitem in item.subItem" :key="subitem.id">{{ subitem.text }}</div>
+                </div>
+              </div>
+            </div>
+          </ul>
 
+          <!-- Items para ver las opciones de inicio de sesión o registro -->
           <ul v-if="!user" class="ul_header_user">
             <template v-for="itemUser in itemsHeaderUser" :key="itemUser.id">
               <router-link class="routes_navbar_user" v-if="itemUser.subItem.length == 0" :to="{ name: itemUser.routeName }">
@@ -28,6 +43,8 @@
               </router-link>
             </template>
           </ul>
+
+          <!-- Item para cerrar sesión -->
           <ul v-else class="ul_header_user">
             <template v-for="itemUser in itemsLogout" :key="itemUser.id">
               <span class="routes_navbar_user" @click="logout()"><b>{{ itemUser.text }}</b></span>
@@ -46,6 +63,10 @@ export default {
     return{
       showSubItems: false,
       user: JSON.parse(sessionStorage.getItem('user')),
+
+      selectedItem: null,
+      subitemsVisible: false,
+      selectedSubitem: null,
       
       // Items de navegación
       itemsHeader: [
@@ -91,16 +112,31 @@ export default {
         },
       ],
 
-      // Item paracerrar sesión
-      itemsLogout: [
+      // Items para navegación del usuario logueado
+      itemsHeaderUserLoged: [
         {
           id: 6,
-          routeName: "addCollectors",
-          text: "Añadir recolectores",
-          subItem: []
-        },
+          routeName: "",
+          text: "Gestión general",
+          subItem: [
+            {
+              id: 7,
+              routeName: "addCollectors",
+              text: "Añadir recolectores"
+            },
+            {
+              id: 8,
+              routeName: "registerFertilization",
+              text: "Registrar fertilización"
+            }
+          ]
+        }
+      ],
+
+      // Item para cerrar sesión
+      itemsLogout: [
         {
-          id: 7,
+          id: 9,
           routeName: "logout",
           text: "Cerrar sesión",
           subItem: []
@@ -109,6 +145,12 @@ export default {
     };
   },
   methods: {
+    selectItem(item) {
+      this.selectedItem = this.selectedItem === item ? null : item;
+    },
+    goLink(subitem){
+      this.$router.push({ name: subitem.routeName })
+    },
     handleStorageChange(event) {
       // Si el objeto de usuario existe en sessionStorage, actualizar el estado del componente
       if (event.key === 'user') {
@@ -118,6 +160,9 @@ export default {
     logout(){
       sessionStorage.removeItem('user');
       this.$router.push({ name: "loginUser" });
+      setTimeout(() => {
+        location.reload();
+      }, 0);
     },
   },
   created() {
@@ -136,8 +181,12 @@ export default {
   height: auto;
   /* background-color: rgba(255, 255, 255, 0.5); */
   background-color: white;
-  padding: 20px 5px 20px 5px;
+  padding: 18px 5px 18px 5px;
   border-bottom: 2px solid #3F2212;
+}
+ol, ul {
+  padding-left: 1rem;
+  padding-right: 1rem;
 }
 .ul_header{
   display: flex;
@@ -146,11 +195,27 @@ export default {
 }
 .ul_header .routes_navbar{
   list-style-type: none;
-  margin: 5px 15px 5px 15px;
+  margin: 5px 10px 5px 10px;
 }
 .routes_navbar{
   text-decoration: none;
   color: #3F2212;
+  cursor: pointer;
+}
+.management, .header_landing{
+  margin-top: auto;
+  margin-bottom: auto;
+}
+.subitems{
+  position: absolute;
+  background: white;
+  padding: 5px 15px 15px 15px;
+  margin-top: 10px;
+  margin-left: -15px;
+  color: #3F2212;
+  cursor: pointer;
+  border-radius: 2px;
+  box-shadow: 2px 2px 2px 2px rgba(0,0,0,0.5);
 }
 .ul_header_user .routes_navbar_user{
   list-style-type: none;

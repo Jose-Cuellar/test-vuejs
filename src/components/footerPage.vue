@@ -8,7 +8,7 @@
           </a>
         </div>
         <div class="section_copyright">
-          <span class="copyright">Copyright: <b id="current_year"></b> ©</span>
+          <span class="copyright">© <span id="current_year"></span><span> AgriControl. </span>Todos los derechos reservados.</span>
         </div>
         <div class="section_redes">
           <span>Síguenos</span>
@@ -66,7 +66,7 @@
 }
 .img_fb{
   margin: 0px 0px 0px 10px;
-  width: 40px;
-  height: 40px;
+  width: 35px;
+  height: 35px;
 }
 </style>

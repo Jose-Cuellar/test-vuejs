@@ -206,7 +206,10 @@ export default {
     width: 100%;
     margin: auto;
     padding: 15% 5% 10% 5%;
-    background-image: url("../../assets/imgs/imgs_page/fondo_home.jpeg");
+    --opacidad-negro: 0.5;
+    background-image: linear-gradient(rgba(0, 0, 0, var(--opacidad-negro)), 
+    rgba(0, 0, 0, var(--opacidad-negro))), 
+    url("../../assets/imgs/imgs_page/fondo_home.jpeg");
     background-attachment: fixed;
     background-repeat: no-repeat;
     background-size: cover;
@@ -225,12 +228,9 @@ export default {
     border: 2px solid;
     cursor: pointer;
     background-color: transparent;
-    color: #008CBA;
+    color: white;
     border-radius: 30px;
     font-weight: bold;
-  }
-  .btn_get:hover{
-    color: green;
   }
   .d-flex{
     padding: 20px;
@@ -260,12 +260,23 @@ export default {
     border: 2px solid;
     cursor: pointer;
     background-color: transparent;
-    color: #008CBA;
+    color: white;
     border-radius: 30px;
     font-weight: bold;
     margin: 20px 20px 5px 0px;
+    background: url(../../assets/imgs/imgs_page/brillo_white.png) no-repeat;
+    background-position: -100px 0px;
+    transition: background-position 1s;
   }
-  .btn_download:hover{
-    color: green;
+  .btn_download:hover {
+    animation: brillo 1.5s linear forwards;
+  }
+  @keyframes brillo {
+    from {
+      background-position: -100px 0px;
+    }
+    to {
+      background-position: 500px 0px;
+    }
   }
 </style>

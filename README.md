@@ -1,4 +1,4 @@
-# test_vue
+# AgriControl
 
 ## Project setup
 ```
